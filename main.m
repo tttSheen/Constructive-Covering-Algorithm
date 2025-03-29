@@ -1,17 +1,17 @@
 clear
 clc
-%Ô¤´¦Àíºóload dataset
-load('./dataSet/iris.mat')
-%load('./dataSet/balance-scale.mat')
-%load('./dataSet/lymphography.mat')
-%load('./dataSet/ionosphere.mat')
-input=normalize(DataSet);%¹éÒ»»¯
-input2=map(input);%ÉıÎ¬
+%é¢„å¤„ç†åload dataset
+load('iris.mat')
+%load('balance-scale.mat')
+%load('lymphography.mat')
+%load('ionosphere.mat')
+input=normalize(DataSet);%å½’ä¸€åŒ–
+input2=map(input);%å‡ç»´
 [m,n]=size(input2);
-indics=crossvalind('Kfold',m,10);%»®·Ö½»²æÑéÖ¤¼¯
+indics=crossvalind('Kfold',m,10);%åˆ’åˆ†äº¤å‰éªŒè¯é›†
 %%
 rate_ave_sum=0;
-%ÔËĞĞÒ»°ÙÂÖÈ¡Æ½¾ù
+%è¿è¡Œä¸€ç™¾è½®å–å¹³å‡
 for g=1:100
     rate_sum=0;
 for round=1:10
@@ -26,31 +26,31 @@ for round=1:10
     %disp('start training...');
     output=[];
     len=length(train_data);
-    train_learn=zeros(len,1);%0±íÊ¾Î´Ñ§Ï°£¬1±íÊ¾ÒÑÑ§Ï°
-    unlearn=find(train_learn==0);%Î´Ñ§Ï°Ñù±¾Ë÷Òı
+    train_learn=zeros(len,1);%0è¡¨ç¤ºæœªå­¦ä¹ ï¼Œ1è¡¨ç¤ºå·²å­¦ä¹ 
+    unlearn=find(train_learn==0);%æœªå­¦ä¹ æ ·æœ¬ç´¢å¼•
     while unlearn
         ulen=length(unlearn);
-        k=ceil((ulen-1)*rand(1)+1);%Ëæ»úÌôÑ¡Ò»¸öÎ´Ñ§Ï°Ñù±¾,unlearn(k)Îª¸ÃÑù±¾ÔÚtrain_dataÖĞµÄË÷Òı
-        xk=train_data(unlearn(k),:);%×÷Îª¸²¸ÇÖĞĞÄ
+        k=ceil((ulen-1)*rand(1)+1);%éšæœºæŒ‘é€‰ä¸€ä¸ªæœªå­¦ä¹ æ ·æœ¬,unlearn(k)ä¸ºè¯¥æ ·æœ¬åœ¨train_dataä¸­çš„ç´¢å¼•
+        xk=train_data(unlearn(k),:);%ä½œä¸ºè¦†ç›–ä¸­å¿ƒ
         xk_label=train_label(unlearn(k));
-        diff_class=unlearn(find(train_label(unlearn)~=xk_label));%ÒìÀàÎ´Ñ§Ï°Ñù±¾Ë÷Òı
-        same_class=unlearn(find(train_label(unlearn)==xk_label));%Í¬ÀàÎ´Ñ§Ï°Ñù±¾Ë÷Òı
+        diff_class=unlearn(find(train_label(unlearn)~=xk_label));%å¼‚ç±»æœªå­¦ä¹ æ ·æœ¬ç´¢å¼•
+        same_class=unlearn(find(train_label(unlearn)==xk_label));%åŒç±»æœªå­¦ä¹ æ ·æœ¬ç´¢å¼•
         diff_dist=[];same_dist=[];
         for i=1:length(diff_class)
-            diff_dist(i,1)=sum(train_data(diff_class(i),:).*xk);%ÒìÀàÑù±¾ÄÚ»ı
+            diff_dist(i,1)=sum(train_data(diff_class(i),:).*xk);%å¼‚ç±»æ ·æœ¬å†…ç§¯
         end
         for i=1:length(same_class)
-            same_dist(i,1)=sum(train_data(same_class(i),:).*xk);%Í¬ÀàÑù±¾ÄÚ»ı
+            same_dist(i,1)=sum(train_data(same_class(i),:).*xk);%åŒç±»æ ·æœ¬å†…ç§¯
         end
         if isempty(diff_class)&&~isempty(same_class)
-            r=min(same_dist);%ÈôÖ»ÓĞÍ¬ÀàÑù±¾£¬ÎŞÒìÀàÑù±¾£¬ÔòÈ¡Í¬ÀàÑù±¾ÖĞÓëÑù±¾ÖĞĞÄµÄ×î´ó¾àÀëÎª°ë¾¶£¨×îĞ¡ÄÚ»ı£©
+            r=min(same_dist);%è‹¥åªæœ‰åŒç±»æ ·æœ¬ï¼Œæ— å¼‚ç±»æ ·æœ¬ï¼Œåˆ™å–åŒç±»æ ·æœ¬ä¸­ä¸æ ·æœ¬ä¸­å¿ƒçš„æœ€å¤§è·ç¦»ä¸ºåŠå¾„ï¼ˆæœ€å°å†…ç§¯ï¼‰
         elseif isempty(same_class)&&~isempty(diff_class)
-            r=max(diff_dist)*2;%ÈôÖ»ÓĞÒìÀàÑù±¾£¬ÎŞÍ¬ÀàÑù±¾£¬ÔòÈ¡ÒìÀàÑù±¾ÖĞÓëÑù±¾ÖĞĞÄµÄ×îĞ¡¾àÀëµÄÒ»°ëÎª°ë¾¶£¨×î´óÄÚ»ı£©
+            r=max(diff_dist)*2;%è‹¥åªæœ‰å¼‚ç±»æ ·æœ¬ï¼Œæ— åŒç±»æ ·æœ¬ï¼Œåˆ™å–å¼‚ç±»æ ·æœ¬ä¸­ä¸æ ·æœ¬ä¸­å¿ƒçš„æœ€å°è·ç¦»çš„ä¸€åŠä¸ºåŠå¾„ï¼ˆæœ€å¤§å†…ç§¯ï¼‰
         elseif isempty(same_class)&&isempty(diff_class) 
-            r=xk.*xk;%Èô¼ÈÎŞÍ¬ÀàÑù±¾Ò²ÎŞÒìÀàÑù±¾£¬ÔòÈ¡Ñù±¾ÖĞĞÄÓë×Ô¼ºµÄÄÚ»ıÎª°ë¾¶
+            r=xk.*xk;%è‹¥æ—¢æ— åŒç±»æ ·æœ¬ä¹Ÿæ— å¼‚ç±»æ ·æœ¬ï¼Œåˆ™å–æ ·æœ¬ä¸­å¿ƒä¸è‡ªå·±çš„å†…ç§¯ä¸ºåŠå¾„
         else
-            min_diff=max(diff_dist);%ÒìÀà×î½üÑù±¾
-            r=min(same_dist(find(same_dist>min_diff)));%×îĞ¡°ë¾¶·¨,Çó×îÔ¶Í¬Ààµã
+            min_diff=max(diff_dist);%å¼‚ç±»æœ€è¿‘æ ·æœ¬
+            r=min(same_dist(find(same_dist>min_diff)));%æœ€å°åŠå¾„æ³•,æ±‚æœ€è¿œåŒç±»ç‚¹
         end
         output_temp.center=unlearn(k);
         output_temp.cdata=xk;
@@ -58,18 +58,18 @@ for round=1:10
         output_temp.r=r;
         output_temp.cnt=1;
         output_temp.samples={unlearn(k)};
-        train_learn(unlearn(k))=1;%¸²¸ÇÖĞĞÄ±ê¼ÇÎªÒÑÑ§Ï°
+        train_learn(unlearn(k))=1;%è¦†ç›–ä¸­å¿ƒæ ‡è®°ä¸ºå·²å­¦ä¹ 
         for i=1:length(same_dist)
             if same_dist(i)>r
                 if same_class(i)~=unlearn(k)
                     output_temp.samples=[output_temp.samples,same_class(i)];
-                    train_learn(same_class(i))=1;%±ê¼ÇÎªÒÑÑ§Ï°
+                    train_learn(same_class(i))=1;%æ ‡è®°ä¸ºå·²å­¦ä¹ 
                     output_temp.cnt=output_temp.cnt+1;
                 end
             end
         end
         output=[output;output_temp];
-        unlearn=find(train_learn==0);%¸üĞÂÎ´Ñ§Ï°Ñù±¾Ë÷Òı      
+        unlearn=find(train_learn==0);%æ›´æ–°æœªå­¦ä¹ æ ·æœ¬ç´¢å¼•      
     end
     sum([output.cnt]);
     %%
@@ -79,31 +79,31 @@ for round=1:10
     [l,w]=size(test_data);
     for t=1:l
         for j=1:length(output)
-            test_dist(t,j)=sum(test_data(t,:).*output(j).cdata);%¼ÆËã²âÊÔ¼¯Ñù±¾ÓëÃ¿¸ö¸²¸ÇÖĞĞÄµÄÄÚ»ı
+            test_dist(t,j)=sum(test_data(t,:).*output(j).cdata);%è®¡ç®—æµ‹è¯•é›†æ ·æœ¬ä¸æ¯ä¸ªè¦†ç›–ä¸­å¿ƒçš„å†…ç§¯
             if test_dist(t,j)>=output(j).r
-                test_temp(t,j)=1;%test_tempÂß¼­Öµ£¬=1±íÊ¾ÔÚµ±Ç°¸²¸ÇÄÚ
+                test_temp(t,j)=1;%test_tempé€»è¾‘å€¼ï¼Œ=1è¡¨ç¤ºåœ¨å½“å‰è¦†ç›–å†…
             else
-                test_temp(t,j)=0;%=0±íÊ¾²»ÔÚµ±Ç°¸²¸ÇÄÚ
+                test_temp(t,j)=0;%=0è¡¨ç¤ºä¸åœ¨å½“å‰è¦†ç›–å†…
             end
         end
     end
-    test_temp(:,j+1)=sum(test_temp,2);%¶Ôtest_tempÇóºÍ
+    test_temp(:,j+1)=sum(test_temp,2);%å¯¹test_tempæ±‚å’Œ
     for t=1:length(test_temp(:,j+1))
-        if test_temp(t,j+1)==1%Èôsum(test_temp)=1£¬Ôò±íÊ¾¸ÃÑù±¾Ö»ÂäÈëÒ»¸ö¸²¸ÇÄÚ£¬Ôò½«Æä»®·Öµ½´Ë¸²¸Ç¶ÔÓ¦µÄÀà±ğ£»Èô!=1£¬ÔòÑÓ³Ù¾ö²ß
+        if test_temp(t,j+1)==1%è‹¥sum(test_temp)=1ï¼Œåˆ™è¡¨ç¤ºè¯¥æ ·æœ¬åªè½å…¥ä¸€ä¸ªè¦†ç›–å†…ï¼Œåˆ™å°†å…¶åˆ’åˆ†åˆ°æ­¤è¦†ç›–å¯¹åº”çš„ç±»åˆ«ï¼›è‹¥!=1ï¼Œåˆ™å»¶è¿Ÿå†³ç­–
             index=find(test_temp(t,1:end-1)==1);
-            result_label(t,1)=output(index).label;%result_labelµÚÒ»ÁĞ±íÊ¾ÑÓ³Ù¾ö²ßÇ°µÄ»®·Ö½á¹û
-            result_label(t,2)=output(index).label;%µÚ¶şÁĞ±íÊ¾ÑÓ³Ù¾ö²ßºóµÄ»®·Ö½á¹û
-            %ÑÓ³Ù¾ö²ß
-        elseif test_temp(t,j+1)==0 %=0±íÊ¾²»ÊôÓÚÈÎºÎÒ»¸ö¸²¸Ç£¬´ËÊ±½«Ñù±¾»®·Öµ½¾àÀë×î½üµÄ¸²¸ÇÖĞ
+            result_label(t,1)=output(index).label;%result_labelç¬¬ä¸€åˆ—è¡¨ç¤ºå»¶è¿Ÿå†³ç­–å‰çš„åˆ’åˆ†ç»“æœ
+            result_label(t,2)=output(index).label;%ç¬¬äºŒåˆ—è¡¨ç¤ºå»¶è¿Ÿå†³ç­–åçš„åˆ’åˆ†ç»“æœ
+            %å»¶è¿Ÿå†³ç­–
+        elseif test_temp(t,j+1)==0 %=0è¡¨ç¤ºä¸å±äºä»»ä½•ä¸€ä¸ªè¦†ç›–ï¼Œæ­¤æ—¶å°†æ ·æœ¬åˆ’åˆ†åˆ°è·ç¦»æœ€è¿‘çš„è¦†ç›–ä¸­
             maxdist=max(test_dist(t,:));
             index=find(test_dist(t,:)==maxdist);
-            result_label(t,1)=-1;%±ê¼ÇÒ»ÏÂ
+            result_label(t,1)=-1;%æ ‡è®°ä¸€ä¸‹
             result_label(t,2)=output(index).label;
-        else%±íÊ¾ÂäÈë¶à¸ö»®·ÖÖĞ
+        else%è¡¨ç¤ºè½å…¥å¤šä¸ªåˆ’åˆ†ä¸­
             ind=find(test_temp(t,:)==1);
             maxdist=max(test_dist(t,ind));
             index=find(test_dist(t,:)==maxdist);
-            result_label(t,1)=0;%±ê¼ÇÒ»ÏÂ
+            result_label(t,1)=0;%æ ‡è®°ä¸€ä¸‹
             result_label(t,2)=output(index).label;           
         end           
     end
@@ -114,8 +114,8 @@ for round=1:10
     right=sum(result_label(:,2)==test_label);
     whole=length(test_label);
     rate=right/whole;
-    %disp(['»®·ÖÕıÈ·¸öÊı',num2str(right)]);
-    %disp(['********ÕıÈ·ÂÊ**********£º',num2str(rate)]);
+    %disp(['åˆ’åˆ†æ­£ç¡®ä¸ªæ•°',num2str(right)]);
+    %disp(['********æ­£ç¡®ç‡**********ï¼š',num2str(rate)]);
     rate_sum=rate+rate_sum;
 end
     rate_ave=rate_sum/10;
@@ -125,4 +125,4 @@ end
 end
 rate_ave_sum=rate_ave_sum/100;
 disp(['**********************rate_average all rounds:',num2str(rate_ave_sum)]);
-disp(['**********************·½²îÎª£º',num2str(var(accuracy_ave))]);
+disp(['**********************æ–¹å·®ä¸ºï¼š',num2str(var(accuracy_ave))]);
